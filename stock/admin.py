@@ -4,8 +4,8 @@ from django.contrib import admin
 # Clases 
 
 class ProductoAdmin (admin.ModelAdmin):
-    fields=['grupo','tipo','descripcion']
-    list_display=['grupo','tipo','descripcion','date_created','date_update']
+    fields=['grupo','tipo','descripcion','stock_minimo']
+    list_display=['grupo','tipo','descripcion','stock_minimo','date_created','date_update']
 
 class Gropuadmin (admin.ModelAdmin):
     fields=['codigo','descripcion']

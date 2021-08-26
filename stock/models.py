@@ -35,6 +35,7 @@ class Producto(models.Model):
    descripcion = models.CharField(max_length=50, verbose_name='Descripcion')
    date_created = models.DateField(auto_now=True)
    date_update = models.DateField(auto_now_add=True)
+   stock_minimo = models.PositiveIntegerField(default=0,verbose_name='Stock Minimo')
    
 
    def __str__(self):
