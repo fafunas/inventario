@@ -14,7 +14,7 @@ def index(request):
 
 #Funcion para agregar producto a la DB   
 def cargar_producto(request):
-    if request.POST == 'POST':
+    if request.POST:
         form = CargarForm(request.POST)
 
         if form.is_valid():
