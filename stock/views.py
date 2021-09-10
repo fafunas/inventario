@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.template import RequestContext, context, loader
-from stock.forms import CargarForm
-from stock.models import Producto, product_group, tipo
+from stock.forms import *
+from stock.models import *
 from django.views.generic import ListView
 
 # Create your views here.
@@ -43,3 +43,6 @@ class ListProductos(ListView):
 
 
         return context
+
+
+#Ingresando producto al almacen, sumando stock

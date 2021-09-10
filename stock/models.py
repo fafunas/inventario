@@ -28,16 +28,30 @@ class tipo(models.Model):
         ordering = ['id']
         db_table = 'Tipos'
 
+class cco(models.Model):
+    codigo = models.CharField(max_length=10, verbose_name= "Codigo")
+    descripcion= models.CharField(max_length=30,verbose_name= "Descripcion")
+
+    def __str__(self):
+        return self.descripcion
+    class Meta:
+        verbose_name = 'Centro de Costo'
+        verbose_name_plural = 'Centro de Costos'
+        ordering = ['id']
+        db_table = 'CCO'
+
 class Producto(models.Model):
    grupo= models.ForeignKey(product_group, on_delete=models.CASCADE)
    tipo= models.ForeignKey(tipo, on_delete=CASCADE)
    codigo = models.CharField(max_length=50, verbose_name='Codigo', null= True, blank=True)
    descripcion = models.CharField(max_length=50, verbose_name='Descripcion')
+   stock_minimo = models.PositiveIntegerField(default=0,verbose_name='Stock Minimo')
+   stock = models.PositiveIntegerField(default=0, verbose_name='Stock Actual')
+   cco = models.ForeignKey(cco, on_delete=CASCADE)
    date_created = models.DateField(auto_now=True)
    date_update = models.DateField(auto_now_add=True)
-   stock_minimo = models.PositiveIntegerField(default=0,verbose_name='Stock Minimo')
    
-
+   
    def __str__(self):
        return self.descripcion
 
@@ -47,9 +61,86 @@ class Producto(models.Model):
        ordering = ['id']
        db_table = 'Productos'
 
+class retiro(models.Model):
+    cod_elemento = models.ForeignKey(Producto, verbose_name="descripcion", on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=0, verbose_name='Cantidad')
+    date = models.DateField(verbose_name="Fecha Retiro")
+    ot = models.PositiveIntegerField(default=0,verbose_name="OT",null=True,blank=True)
+    observacion = models.CharField(max_length=100, verbose_name="Observaciones")    
+
+    def __str__(self):
+       return self.cod_elemento
+
+    class Meta:
+       verbose_name = 'Retiro'
+       verbose_name_plural = 'Retiros'
+       ordering = ['id']
+       db_table = 'Retiros'
+
+class panol(models.Model):
+    codigo = models.CharField(max_length=10,verbose_name='Codigo')
+    descripcion = models.CharField(max_length=20,verbose_name='Descripcion')
     
+    def __str__(self):
+       return self.descripcion
+
+    class Meta:
+       verbose_name = 'Pañol'
+       verbose_name_plural = 'Pañoles'
+       ordering = ['id']
+       db_table = 'Pañol'
 
 
 
 
+class traspasos(models.Model):
+    cod_elemento = models.CharField(max_length=50, verbose_name='Codigo', null= True, blank=True)
+    cantidad = models.PositiveIntegerField(default=0, verbose_name='Cantidad')
+    date = models.DateField(verbose_name="Fecha Traspaso")
+    nro_panol = models.ForeignKey(panol, on_delete=models.CASCADE)
+    observacion = models.CharField(max_length=100, verbose_name="Observaciones")    
+
+    def __str__(self):
+       return self.cod_elemento
+
+    class Meta:
+       verbose_name = 'Traspasos'
+       verbose_name_plural = 'Traspasos'
+       ordering = ['id']
+       db_table = 'Traspasos'
+
+
+class prestamos(models.Model):
+    cod_elemento = models.CharField(max_length=50, verbose_name='Codigo', null= True, blank=True)
+    cantidad = models.PositiveIntegerField(default=0, verbose_name='Cantidad')
+    fecha_retiro = models.DateField(verbose_name="Fecha Retiro")
+    fecha_Devolucion = models.DateField(verbose_name="Fecha Retiro")
+    observacion = models.CharField(max_length=100, verbose_name="Observaciones")    
+
+    def __str__(self):
+       return self.cod_elemento
+
+    class Meta:
+       verbose_name = 'Prestamo'
+       verbose_name_plural = 'Prestamos'
+       ordering = ['id']
+       db_table = 'Prestamos'
+
+
+class Ingresos(models.Model):
+    cod_elemento = models.CharField(max_length=50, verbose_name='Codigo', null= True, blank=True)
+    cantidad = models.PositiveIntegerField(default=0, verbose_name='Cantidad')
+    date = models.DateField(verbose_name="Fecha Ingreso")
+    nro_remito = models.PositiveIntegerField(default=0,verbose_name="Remito",null=True,blank=True)
+    nro_rq = models.PositiveIntegerField(default=0,verbose_name="Requerimiento",null=True,blank=True)
+    observacion = models.CharField(max_length=100, verbose_name="Observaciones")    
+
+    def __str__(self):
+       return self.cod_elemento
+
+    class Meta:
+       verbose_name = 'Ingreso'
+       verbose_name_plural = 'Ingresos'
+       ordering = ['id']
+       db_table = 'Ingresos'      
 
