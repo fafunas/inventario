@@ -5,7 +5,7 @@ from django.db.models.deletion import CASCADE
 
 # Create your models here.
 class product_group(models.Model):
-    codigo= models.CharField(max_length=3, verbose_name= 'Codigo')
+    codigo= models.CharField(max_length=3, verbose_name= 'Codigo', unique=True)
     descripcion= models.CharField(max_length=30, verbose_name='Descripcion')
 
     def __str__(self):
@@ -17,7 +17,7 @@ class product_group(models.Model):
         db_table = 'Grupos'
 
 class tipo(models.Model):
-    codigo= models.CharField(max_length=3, verbose_name= 'Codigo')
+    codigo= models.CharField(max_length=3, verbose_name= 'Codigo', unique=True)
     descripcion= models.CharField(max_length=30, verbose_name='Descripcion')
 
     def __str__(self):
@@ -29,7 +29,7 @@ class tipo(models.Model):
         db_table = 'Tipos'
 
 class cco(models.Model):
-    codigo = models.CharField(max_length=10, verbose_name= "Codigo")
+    codigo = models.CharField(max_length=10, verbose_name= "Codigo",unique=True)
     descripcion= models.CharField(max_length=30,verbose_name= "Descripcion")
 
     def __str__(self):
@@ -78,7 +78,7 @@ class retiro(models.Model):
        db_table = 'Retiros'
 
 class panol(models.Model):
-    codigo = models.CharField(max_length=10,verbose_name='Codigo')
+    codigo = models.CharField(max_length=10,verbose_name='Codigo', unique=True)
     descripcion = models.CharField(max_length=20,verbose_name='Descripcion')
     
     def __str__(self):
