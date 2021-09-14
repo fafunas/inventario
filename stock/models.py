@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.forms import model_to_dict
 
 from django.db.models.deletion import CASCADE
 
@@ -62,7 +63,7 @@ class Producto(models.Model):
        db_table = 'Productos'
 
 class retiro(models.Model):
-    cod_elemento = models.ForeignKey(Producto, verbose_name="descripcion", on_delete=models.CASCADE)
+    descripcion = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=0, verbose_name='Cantidad')
     date = models.DateField(verbose_name="Fecha Retiro")
     ot = models.PositiveIntegerField(default=0,verbose_name="OT",null=True,blank=True)
@@ -94,7 +95,7 @@ class panol(models.Model):
 
 
 class traspasos(models.Model):
-    cod_elemento = models.CharField(max_length=50, verbose_name='Codigo', null= True, blank=True)
+    descripcion = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=0, verbose_name='Cantidad')
     date = models.DateField(verbose_name="Fecha Traspaso")
     nro_panol = models.ForeignKey(panol, on_delete=models.CASCADE)
@@ -111,7 +112,7 @@ class traspasos(models.Model):
 
 
 class prestamos(models.Model):
-    cod_elemento = models.CharField(max_length=50, verbose_name='Codigo', null= True, blank=True)
+    descripcion = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=0, verbose_name='Cantidad')
     fecha_retiro = models.DateField(verbose_name="Fecha Retiro")
     fecha_Devolucion = models.DateField(verbose_name="Fecha Retiro")
@@ -128,7 +129,7 @@ class prestamos(models.Model):
 
 
 class Ingresos(models.Model):
-    cod_elemento = models.CharField(max_length=50, verbose_name='Codigo', null= True, blank=True)
+    descripcion = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=0, verbose_name='Cantidad')
     date = models.DateField(verbose_name="Fecha Ingreso")
     nro_remito = models.PositiveIntegerField(default=0,verbose_name="Remito",null=True,blank=True)
@@ -137,6 +138,16 @@ class Ingresos(models.Model):
 
     def __str__(self):
        return self.cod_elemento
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['descripcion'] = self.descripcion.toJSON()
+        item['cantidad'] = format(self.cantidad, '.2f')
+        item['nro_remito'] = format(self.nro_remito, '.2f')
+        item['cantnro_rqidad'] = format(self.nro_rq, '.2f')
+        item['observacion'] = self.observacion.toJSON()
+        item['date'] = self.date_joined.strftime('%d-%m-%Y')
+        return item
 
     class Meta:
        verbose_name = 'Ingreso'

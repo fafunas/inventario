@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.template import RequestContext, context, loader
@@ -6,6 +7,9 @@ from stock.forms import *
 from stock.models import *
 from django.views.generic import ListView, CreateView
 from django.forms import formset_factory
+from django.urls import reverse_lazy
+from django.http import JsonResponse
+
 
 # Create your views here.
 
@@ -49,20 +53,34 @@ class ListProductos(ListView):
 
 
 #Ingresando producto al almacen, sumando stock
-class IngresoProducto(FormView):
-    form_class= formset_factory(IngresoProd, extra=2)
+class IngresoProducto(CreateView):
+    model = Ingresos
+    form_class = IngresoProd
     template_name = 'stock/ingreso.html'
-    success_url = 'stock/ingreso.html'
+    success_url = reverse_lazy('index')
+    url_redirect = success_url
+    
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax:
+            palabra = request.GET.get('term', '')
+            print(palabra)
+            prod = Producto.objects.filter(descripcion__icontains=palabra)
+            results = []
+            for a in prod:
+                data = {}
+                data['label'] = a.producto
+                results.append(data)
+            data_json = json.dumps(results)
+        else:
+            data_json = "fallo"
+        mimetype = "application/json"
+        return HttpResponse(data_json, mimetype)
 
-    def form_valid(self,form):
-        for f in form:
-            f.save()
-            
-        return super(IngresoProducto, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Ingreso Productos'
-        
-    
+        context['title'] = 'Agregar Items'
+        #context['entity'] = 'Ventas'
+        context['list_url'] = self.success_url
+        context['action'] = 'add'
         return context

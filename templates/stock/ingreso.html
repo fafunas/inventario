@@ -1,29 +1,83 @@
-
-
 {% extends 'stock/index.html' %}
+{% load static %}
+
+{% block head %}
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
+    <link href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.css' %}" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}"/>
+    <link href="{% static 'js/form.js' %}" rel="stylesheet"/>
+{% endblock %}
 
 {% block content %}
-
-<div class="col-md-6">
- <div class="card card-secondary">
-    <div class="card-header">
-        <h3 class="card-title">Ingreso Producto</h3>
-    </div>
-    <div class="card-body">
-        <form class="col-xs-12 action={% url 'ingreso'%}" method="POST" enctype ="multipart/form-data">{% csrf_token %}
-        <table>
-        {{form.management_form}}
-        {{form.as_table}}
-        <p></p>
-        </table>
-    </div>
-                <!-- /.card-body -->
-                <div class="card-footer">
-                  <button type="submit" value="Submit" class="btn btn-secondary">Agregar</button>
+<form method="post">{% csrf_token %}
+        <div class="card card-primary">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card card-secondary">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de productos</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Buscador de productos:</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="search"
+                                               placeholder="Ingrese una descripción de producto" autocomplete="off">
+                                        <span class="input-group-append">
+                                        <button type="button" class="btn btn-danger btn-flat btnClearSearch"><i
+                                                class="fas fa-times"></i></button>
+                                      </span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <hr>
+                                <table class="table table-bordered" id="datain">
+                                    <thead>
+                                    <tr>
+                                        <th>Descripcion</th>
+                                        <th>Cantidad</th>
+                                        <th>Fecha</th>
+                                        <th>Numero de Remito</th>
+                                        <th>Numero de Rq</th>
+                                        <th>Observacion</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </form>
-               
- </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary btn-flat">
+                    <i class="fas fa-save"></i> Guardar registro
+                </button>
+                <a href="" class="btn btn-danger btn-flat">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </div>
+    </form>
 
-</div>
 {% endblock  %}
+
+ {% block javascript %}
+{% comment %}  <script type="application/javascript">
+        $(document).ready(function () {
+            $('#data').DataTable({
+                responsive: true,
+                autoWidth: false
+            });
+
+        });
+ </script> {% endcomment %}
+ {% endblock %}
