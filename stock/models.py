@@ -56,6 +56,18 @@ class Producto(models.Model):
    def __str__(self):
        return self.descripcion
 
+   def toJSON(self):
+       item = model_to_dict(self)
+       item['grupo'] = self.grupo.toJSON()
+       item['tipo'] = self.tipo.toJSON()
+       item['descripcion'] = self.descripcion.toJSON()
+       item['stock_minimo'] = format(self.stock_minimo, '.2f')
+       item['stock'] = format(self.stock,'.2f')
+       item['cco'] = self.cco.toJSON
+       item['date_created'] = self.date_created.strftime('%d-%m-%Y')
+       item['date_update'] = self.date_update.strftime('%d-%m-%Y')
+       return item
+
    class Meta:
        verbose_name = 'Producto'
        verbose_name_plural = 'Productos'
@@ -138,16 +150,6 @@ class Ingresos(models.Model):
 
     def __str__(self):
        return self.cod_elemento
-
-    def toJSON(self):
-        item = model_to_dict(self)
-        item['descripcion'] = self.descripcion.toJSON()
-        item['cantidad'] = format(self.cantidad, '.2f')
-        item['nro_remito'] = format(self.nro_remito, '.2f')
-        item['cantnro_rqidad'] = format(self.nro_rq, '.2f')
-        item['observacion'] = self.observacion.toJSON()
-        item['date'] = self.date_joined.strftime('%d-%m-%Y')
-        return item
 
     class Meta:
        verbose_name = 'Ingreso'

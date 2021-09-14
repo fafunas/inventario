@@ -59,28 +59,16 @@ class IngresoProducto(CreateView):
     template_name = 'stock/ingreso.html'
     success_url = reverse_lazy('index')
     url_redirect = success_url
-    
+
+      
     def post(self, request, *args, **kwargs):
-        if request.is_ajax:
-            palabra = request.GET.get('term', '')
-            print(palabra)
-            prod = Producto.objects.filter(descripcion__icontains=palabra)
-            results = []
-            for a in prod:
-                data = {}
-                data['label'] = a.producto
-                results.append(data)
-            data_json = json.dumps(results)
-        else:
-            data_json = "fallo"
-        mimetype = "application/json"
-        return HttpResponse(data_json, mimetype)
+        data = {}
+        
 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Agregar Items'
-        #context['entity'] = 'Ventas'
         context['list_url'] = self.success_url
         context['action'] = 'add'
         return context

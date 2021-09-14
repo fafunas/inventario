@@ -11,11 +11,10 @@
     <link href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.css' %}" rel="stylesheet"/>
     <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}"/>
-    <link href="{% static 'js/form.js' %}" rel="stylesheet"/>
 {% endblock %}
 
 {% block content %}
-<form method="post">{% csrf_token %}
+
         <div class="card card-primary">
             <div class="card-body">
                 <div class="row">
@@ -28,7 +27,7 @@
                                 <div class="form-group">
                                     <label>Buscador de productos:</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" name="search"
+                                        <input type="text" class="form-control" id="search"
                                                placeholder="Ingrese una descripción de producto" autocomplete="off">
                                         <span class="input-group-append">
                                         <button type="button" class="btn btn-danger btn-flat btnClearSearch"><i
@@ -44,8 +43,8 @@
                                         <th>Descripcion</th>
                                         <th>Cantidad</th>
                                         <th>Fecha</th>
-                                        <th>Numero de Remito</th>
-                                        <th>Numero de Rq</th>
+                                        <th>N° Remito</th>
+                                        <th>N° RQ</th>
                                         <th>Observacion</th>
                                     </tr>
                                     </thead>
@@ -66,18 +65,38 @@
                 </a>
             </div>
         </div>
-    </form>
 
 {% endblock  %}
 
  {% block javascript %}
-{% comment %}  <script type="application/javascript">
-        $(document).ready(function () {
-            $('#data').DataTable({
-                responsive: true,
-                autoWidth: false
-            });
+  <script type="application/javascript">
+    $(function () {
+    // Buscar Producto
 
-        });
- </script> {% endcomment %}
+    $('#search').autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'action': 'search_products',
+                    'term': request.term
+                },
+                dataType: 'json',
+            }).done(function (data) {
+                response(data);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                alert(textStatus + ': ' + errorThrown);
+            }).always(function (data) {
+
+            });
+        },
+        delay: 500,
+        minLength: 1,
+        select: function (event, ui) {
+            console.log(hola)
+        }
+    });
+});
+ </script> 
  {% endblock %}
