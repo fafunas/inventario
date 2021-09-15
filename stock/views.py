@@ -62,13 +62,17 @@ class IngresoProducto(CreateView):
 
       
     def post(self, request, *args, **kwargs):
-        data = {}
+        if request.is_ajax:
+            palabra = request.POST['term']
+            print(palabra)
+            libro = Producto.objects.filter(descripcion__icontains=palabra)
+            results = []
+            for i in libro:
+                item = i.toJSON()
+                item['value'] = i.name
+                results.append(item)
+        else:
+            data_json = "fallo"
+        mimetype = "application/json"
+        return HttpResponse(data_json, mimetype)
         
-
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Agregar Items'
-        context['list_url'] = self.success_url
-        context['action'] = 'add'
-        return context
