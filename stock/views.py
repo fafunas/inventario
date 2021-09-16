@@ -9,16 +9,18 @@ from django.views.generic import ListView, CreateView
 from django.forms import formset_factory
 from django.urls import reverse_lazy
 from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
 
 def index(request):
 
-    return render (request, 'stock/index.html')
+    return render(request, 'stock/index.html')
 
 
-#Funcion para agregar producto a la DB   
+#Funcion para agregar producto a la DB
 def cargar_producto(request):
     if request.POST:
         form = CargarForm(request.POST)
@@ -28,15 +30,16 @@ def cargar_producto(request):
             tipo = form.cleaned_data['tipo']
             descripcion = form.cleaned_data['descripcion']
             stock_minimo = form.cleaned_data['stock_minimo']
-            cco= form.cleaned_data['cco']
+            cco = form.cleaned_data['cco']
 
-            newdoc = Producto(grupo = grupo, tipo = tipo, descripcion = descripcion, stock_minimo = stock_minimo, cco=cco)
+            newdoc = Producto(
+                grupo=grupo, tipo=tipo, descripcion=descripcion, stock_minimo=stock_minimo, cco=cco)
             newdoc.save()
             return redirect("index")
     else:
-        form =CargarForm()
-    return render(request, 'stock/alta_prod.html', {'form':form})
-    
+        form = CargarForm()
+    return render(request, 'stock/alta_prod.html', {'form': form})
+
 
 #Listado de productos
 
@@ -47,7 +50,6 @@ class ListProductos(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Productos'
-
 
         return context
 
@@ -60,19 +62,23 @@ class IngresoProducto(CreateView):
     success_url = reverse_lazy('index')
     url_redirect = success_url
 
-      
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
-        if request.is_ajax:
-            palabra = request.POST['term']
-            print(palabra)
-            libro = Producto.objects.filter(descripcion__icontains=palabra)
-            results = []
-            for i in libro:
-                item = i.toJSON()
-                item['value'] = i.name
-                results.append(item)
-        else:
-            data_json = "fallo"
-        mimetype = "application/json"
-        return HttpResponse(data_json, mimetype)
-        
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'search_products':
+                data = []
+                prods = Producto.objects.filter(descripcion__icontains=request.POST['term'])
+                for i in prods:
+                    item = i.toJSON()
+                    item['value'] = i.descripcion
+                    data.append(item)
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)

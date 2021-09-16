@@ -11,6 +11,8 @@ class product_group(models.Model):
 
     def __str__(self):
         return self.descripcion
+    def toJSON(self):
+        item = model_to_dict(self)
     class Meta:
         verbose_name = 'Grupo'
         verbose_name_plural = 'Grupos'
@@ -23,6 +25,8 @@ class tipo(models.Model):
 
     def __str__(self):
         return self.descripcion
+    def toJSON(self):
+        item = model_to_dict(self)
     class Meta:
         verbose_name = 'Tipo'
         verbose_name_plural = 'Tipos'
@@ -58,12 +62,12 @@ class Producto(models.Model):
 
    def toJSON(self):
        item = model_to_dict(self)
-       item['grupo'] = self.grupo.toJSON()
-       item['tipo'] = self.tipo.toJSON()
-       item['descripcion'] = self.descripcion.toJSON()
+      # item['grupo'] = self.grupo.toJSON()
+      # item['tipo'] = self.tipo.toJSON()
+      # item['descripcion'] = self.descripcion.toJSON()
        item['stock_minimo'] = format(self.stock_minimo, '.2f')
        item['stock'] = format(self.stock,'.2f')
-       item['cco'] = self.cco.toJSON
+       #item['cco'] = self.cco.toJSON()
        item['date_created'] = self.date_created.strftime('%d-%m-%Y')
        item['date_update'] = self.date_update.strftime('%d-%m-%Y')
        return item
