@@ -1,6 +1,6 @@
 from django.db.models.base import Model
-from django.forms import ModelForm
-from .models import Producto
+from django.forms import *
+from .models import Ingresos, Producto
 
 #Ingreso nueva producto
 class CargarForm(ModelForm):
@@ -28,3 +28,16 @@ class CargarForm(ModelForm):
 
 
 #Ingreso producto al Stock
+class IngresoProd(ModelForm):
+    def __init__(self, *args, **kwargs):
+      super(IngresoProd, self).__init__(*args, **kwargs)
+      for form in self.visible_fields():
+            form.field.widget.attrs['class'] = 'form-control'
+            form.field.widget.attrs['autocomplete'] = 'off'
+
+    class Meta:
+        model = Ingresos
+        fields = '__all__'
+        
+    def __init__(self, *args, **kwargs):
+      super(IngresoProd, self).__init__(*args, **kwargs)
